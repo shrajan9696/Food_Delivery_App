@@ -1,10 +1,16 @@
 import React from 'react';
+import ReactDOMServer from "react-dom/server";
 import Modal from '../UI/Modal';
 import classes from './Cart.module.css';
 import { useContext,useState } from 'react';
 import CartContext from '../../Store/cart-context';
+import Invoice from './Invoice';
 import CartItem from './CartItem';
 import Checkout from './CheckOut';
+import {jsPDF} from 'jspdf';
+import html2canvas from "html2canvas";
+
+
 const Cart = (props) => {
 
   const cartCTX = useContext(CartContext);
@@ -14,6 +20,12 @@ const Cart = (props) => {
   const[isSubmitting,setIssubmitting] = useState(false);
 
   const[didSubmit,setDidSubmit] = useState(false);
+  
+  const [pdfUrl,setPdfUrl] = useState();
+  const[pdfHtml,setpdfHtml] = useState();
+  const [invoiceId,setInvoiceId] = useState();
+
+
 
   const totalAmount = `$${cartCTX.totalAmount.toFixed(2)}`;
 
@@ -30,6 +42,59 @@ const Cart = (props) => {
        setIsCheckOut(true);
   }
 
+  const tableGenerator = (pdfData) =>{
+
+   let headers = [];
+   let rows=[];
+  const userDetail = pdfData.user;
+    const orderdetail = pdfData.orderedItems;
+    console.log(orderdetail);
+
+    for (const key in userDetail) 
+    {
+        headers.push(key);
+        rows.push(userDetail[key]);
+    }
+
+  return <Invoice header={headers} row={rows} order={orderdetail} key={Math.random()}/>
+
+  
+  }
+
+  const pdfGenerator = (pdfData)=>{
+    const tableHTML = tableGenerator(pdfData);
+    console.log(tableHTML);
+    
+    const elementHtml = ReactDOMServer.renderToStaticMarkup(tableHTML);
+    setpdfHtml(elementHtml);
+    const pdf = new jsPDF("p", "pt", "letter");
+    pdf.html(elementHtml, {
+      callback: function (doc) {
+        const dataUri = doc.output("datauristring");
+        setPdfUrl(dataUri);
+      },
+      x: 20,
+    y: 20
+    });
+
+  
+     
+}
+
+const pdfDownloadHandler = ()=>{
+ 
+  const pd = new jsPDF("p", "pt", "letter");
+  pd.html(pdfHtml, {
+    callback: function (doc) {
+      doc.save("data.pdf");
+    },
+    x: 20,
+    y: 20
+  });
+}
+
+
+
   const submitHandler = async (userData)=>{
     setIssubmitting(true);
     try{
@@ -43,10 +108,21 @@ const Cart = (props) => {
          if(!response.ok){
           throw new Error("something went wrong");
          }
+
+         const data = await response.json();
+     console.log(data.name);
+     setInvoiceId(data.name);
   
          setIssubmitting(false);
          setDidSubmit(true);
          cartCTX.clearCart();
+         
+         pdfGenerator({
+          user:userData,
+          orderedItems:cartCTX.items
+         });
+        
+
         }
         catch(err){
            console.log(err);
@@ -80,6 +156,10 @@ const isSubmittingModalContent = <p>Sending order data...</p>;
 
 const didSubmitModalContent = <React.Fragment>
 <p>Successfully sent the order...</p>
+<iframe src={pdfUrl} width="100%" height="100%"></iframe>
+<div className={classes.actions}>
+    <button className={classes['button--alt']} onClick={pdfDownloadHandler}>Download Invoice</button>
+  </div>
 <div className={classes.actions}>
     <button className={classes['button--alt']} onClick={props.onClose}>Close</button>
   </div>
