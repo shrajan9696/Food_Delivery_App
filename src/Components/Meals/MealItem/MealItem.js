@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import CartContext from '../../../Store/cart-context';
+import image from '../../../assets/mealsImage.jpg';
 
 import classes from './MealItem.module.css';
 import MealItemForm from './MealItemForm';
@@ -21,6 +22,9 @@ const MealItem = props =>{
        <div className={classes.description}>{props.description}</div>
         <div className={classes.price}>{price}</div>
     </div>
+    {/* <div>
+        <img src={image}/>
+    </div> */}
    <div>
          <MealItemForm onAddToCart = {AddToCartHandler}/>
    </div>

@@ -41,7 +41,7 @@ const AvailableMeals = () => {
   
  
   
-    fetchMeals().catch(err=>{
+    fetchMeals().then(()=>console.log("success")).catch(err=>{
       setIsLoading(false);
       sethttpError(err.message);
     });

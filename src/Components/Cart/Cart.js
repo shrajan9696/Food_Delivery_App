@@ -23,7 +23,7 @@ const Cart = (props) => {
   
   const [pdfUrl,setPdfUrl] = useState();
   const[pdfHtml,setpdfHtml] = useState();
-  const [invoiceId,setInvoiceId] = useState();
+  const [invoiceId,setInvoiceId] = useState("");
 
 
 
@@ -56,7 +56,7 @@ const Cart = (props) => {
         rows.push(userDetail[key]);
     }
 
-  return <Invoice header={headers} row={rows} order={orderdetail} key={Math.random()}/>
+  return <Invoice header={headers} row={rows} order={orderdetail} key={Math.random()} invoiceId={pdfData.orderId} Total={totalAmount}/>
 
   
   }
@@ -67,7 +67,12 @@ const Cart = (props) => {
     
     const elementHtml = ReactDOMServer.renderToStaticMarkup(tableHTML);
     setpdfHtml(elementHtml);
-    const pdf = new jsPDF("p", "pt", "letter");
+    // let  a4 = [595.28, 841.89];  
+    const pdf = new jsPDF("p", "pt", "a4");
+
+    pdf.setLineWidth(0.1);
+pdf.setLineHeightFactor(1.2);
+    
     pdf.html(elementHtml, {
       callback: function (doc) {
         const dataUri = doc.output("datauristring");
@@ -108,9 +113,11 @@ const pdfDownloadHandler = ()=>{
          if(!response.ok){
           throw new Error("something went wrong");
          }
+        //  console.log(response);
 
          const data = await response.json();
-     console.log(data.name);
+    //      console.log(data);
+    //  console.log(data.name);
      setInvoiceId(data.name);
   
          setIssubmitting(false);
@@ -119,7 +126,8 @@ const pdfDownloadHandler = ()=>{
          
          pdfGenerator({
           user:userData,
-          orderedItems:cartCTX.items
+          orderedItems:cartCTX.items,
+          orderId:data.name
          });
         
 
@@ -156,7 +164,7 @@ const isSubmittingModalContent = <p>Sending order data...</p>;
 
 const didSubmitModalContent = <React.Fragment>
 <p>Successfully sent the order...</p>
-<iframe src={pdfUrl} width="100%" height="100%"></iframe>
+<iframe src={pdfUrl} width="100%" height ="400px"></iframe>
 <div className={classes.actions}>
     <button className={classes['button--alt']} onClick={pdfDownloadHandler}>Download Invoice</button>
   </div>

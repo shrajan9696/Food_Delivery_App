@@ -1,3 +1,4 @@
+import './Invoice.css';
 const InvoiceOrder = (props) =>{
     return (
         <tr>
