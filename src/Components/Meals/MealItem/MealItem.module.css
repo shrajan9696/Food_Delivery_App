@@ -20,3 +20,25 @@
     color: #ad5502;
     font-size: 1.25rem;
   }
+
+  .parent {
+    width: 300px; 
+    height: 150px; 
+    position: relative; /* Required for child element to use parent as reference */
+    margin-right: 5px;
+  }
+  
+  .parent img {
+    position: absolute; /* Position the image relative to the parent */
+    top: 0;
+    left: 0;
+    width: 100%; /* Make the width of the image 100% of the parent */
+    height: 100%; /* Make the height of the image 100% of the parent */
+    object-fit: cover; /* Crop the image if necessary to fill the parent */
+  }
+
+  .content {
+    margin: 10px;
+    width: 400px;
+    height: 150px;
+  }

@@ -27,7 +27,7 @@ const Cart = (props) => {
 
 
 
-  const totalAmount = `$${cartCTX.totalAmount.toFixed(2)}`;
+  const totalAmount = `₹${cartCTX.totalAmount.toFixed(2)}`;
 
   const hasItems = cartCTX.items.length;
   const cartItemRemoveHandler = (id)=>{

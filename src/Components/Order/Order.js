@@ -81,7 +81,9 @@ const Order = (props) =>{
       </div>
 
       </form>
-      {isShown && deatails }
+      
+      {isShown && <div style={{height:"400px","overflow":"scroll"}}>{deatails}</div> }
+   
 </Modal>
     );
 

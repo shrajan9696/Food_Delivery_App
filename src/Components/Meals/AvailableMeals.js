@@ -32,7 +32,8 @@ const AvailableMeals = () => {
           id: key,
         name: data[key].name,
         description: data[key].description,
-        price: data[key].price
+        price: data[key].price,
+        link:data[key].link
         })
       }
       setMeals(updatedMeals);
@@ -74,7 +75,8 @@ const AvailableMeals = () => {
     id={meal.id}
     name={meal.name}
     description={meal.description}
-    price={meal.price} />
+    price={meal.price} 
+      link = {meal.link}/>
   ));
 
   
