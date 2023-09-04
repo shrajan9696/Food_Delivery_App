@@ -22,12 +22,17 @@ function App() {
  const hideOrderHandler = () =>{
   setIsOrderShown(false);
  }
+
+ const withoutLoginHandler = ()=>{
+  alert("please signin to access your cart and orders")
+ }
+
   return (
     <CartProvider>
     
     {cartIsShown && <Cart onClose={hideCartHandler}/>}
     
-      <Header onShowCart = {showCartHandler} onShowOrders={showOrderHandler}/>
+      <Header onShowCart = {showCartHandler} onShowOrders={showOrderHandler} onShowWithoutLogin={withoutLoginHandler}/>
       <main>
       {orderIsShown && <Order onClose={hideOrderHandler}/>}
    <Meals/>
