@@ -24,7 +24,7 @@ function App() {
  }
 
  const withoutLoginHandler = ()=>{
-  alert("please signin to access your cart and orders")
+  alert("please signin to access your cart and to place orders")
  }
 
   return (
